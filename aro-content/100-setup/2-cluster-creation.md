@@ -2,7 +2,7 @@
 
 During this workshop, you will be working on a cluster that you will create yourself in this step. This cluster will be dedicated to you. Each person has been assigned a workshop user ID, if you need a user ID please see a facilitator.
 
-The first step we need to do is assign an environment variable to this user ID. All the Azure resources that you will be creating will be placed in a resource group that matches this user ID.  The user ID will be in the following format: user-x. For example user-1.
+The first step we need to do is assign an environment variable to this user ID. All the Azure resources that you will be creating will be placed in a resource group that matches this user ID.  The user ID will be in the following format: userX. For example user1.
 
 While in the Azure Cloud Shell that you should still have open from the "Environment Setup" section, run the following command to ensure the system has the correct environment variables for your user (If not, request help):
 
@@ -122,21 +122,3 @@ Before we can create an ARO cluster, we need to setup the virtual network that t
     ```
 
     While the cluster is being created, let's learn more about what you will be doing in this workshop.
-
-7. Once the cluster is ready, fetch credentials, API URL, and Console URL
-
-    ```bash
-    cat << EOF >> ~/.workshoprc
-    export OCP_PASS=$(az aro list-credentials --name \
-      "${AZ_ARO}" --resource-group "${AZ_RG}" \
-      --query="kubeadminPassword" -o tsv)
-    export OCP_USER="kubeadmin"
-    export OCP_CONSOLE="$(az aro show --name ${AZ_ARO} \
-      --resource-group ${AZ_RG} \
-      -o tsv --query consoleProfile)"
-    export OCP_API="$(az aro show --name ${AZ_ARO} \
-      --resource-group ${AZ_RG} \
-      --query apiserverProfile.url -o tsv)"
-    EOF
-    source ~/.workshoprc
-    ```

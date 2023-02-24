@@ -35,7 +35,7 @@ Azure Arc for OpenShift supports the following use cases for connected clusters:
     "infrastructure": "azure",
     "kubernetesVersion": null,
     "lastConnectivityTime": null,
-    "location": "eastus",
+    "location": "{{ azure_region }}",
     "managedIdentityCertificateExpirationTime": null,
     "name": "user1-cluster",
     "offering": null,
@@ -93,5 +93,5 @@ Azure Arc for OpenShift supports the following use cases for connected clusters:
     ```bash
     Name           Location    ResourceGroup
     -------------  ----------  ---------------
-    user1-cluster  eastus      user1-rg
+    user1-cluster  {{ azure_region }}      user1-rg
     ```

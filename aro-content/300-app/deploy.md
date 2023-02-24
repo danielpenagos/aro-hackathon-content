@@ -23,7 +23,7 @@ It's time for us to put our cluster to work and deploy a workload. We're going t
       --public 0.0.0.0
     ```
 
-1. Finally, let's check connectivity from our Cloud Shell to our database. To do so, run the following command:
+1. Check connectivity from our Cloud Shell to our database. To do so, run the following command:
 
     ```bash
     psql \
@@ -41,7 +41,7 @@ It's time for us to put our cluster to work and deploy a workload. We're going t
     2022-11-15 06:39:13.903299+00
     (1 row)
     ```
--->
+
 ## Build and deploy the Microsweeper app
 
 Now that we've got a PostgreSQL instance up and running, let's build and deploy our application.
@@ -58,21 +58,44 @@ Now that we've got a PostgreSQL instance up and running, let's build and deploy 
     cd aro-workshop-app
     ```
 
-1. Next, we will add the OpenShift extension to the Quarkus CLI. To do so, run the following command:
+1. Next, we will add the OpenShift extension to the Quarkus CLI. To do so, run the following command
 
     ```bash
     quarkus ext add openshift
     ```
 
+1. We also want Quarkus to be able to use OpenShift ConfigMaps and Secrets
+
+    ```bash
+    quarkus ext add kubernetes-config
+    ```
+
+1. Create a OpenShift secret containing Database credentials for Quarkus to use
+
+    ```bash
+    cat << EOF | oc apply -f -
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: microsweeper-secret
+      namespace: microsweeper-ex
+    type: Opaque
+    stringData:
+      PG_URL: jdbc:postgresql://microsweeper-${UNIQUE}.postgres.database.azure.com:5432/postgres
+      PG_USER: myAdmin@microsweeper-${UNIQUE}.postgres.database.azure.com
+      PG_PASS: ${AZ_USER}-${UNIQUE}
+    EOF
+    ```
+
 1. Now, we'll configure Quarkus to use the PostgreSQL database that we created earlier in this section. To do so, we'll create an `application.properties` file using by running the following command:
 
     ```xml
-    cat <<EOF > ./src/main/resources/application.properties
+    cat <<"EOF" > ./src/main/resources/application.properties
     # Database configurations
     %prod.quarkus.datasource.db-kind=postgresql
-    %prod.quarkus.datasource.jdbc.url=jdbc:postgresql://microsweeper-${UNIQUE}.postgres.database.azure.com:5432/postgres
-    %prod.quarkus.datasource.username=myAdmin@microsweeper-${UNIQUE}.postgres.database.azure.com
-    %prod.quarkus.datasource.password=${AZ_USER}-${UNIQUE}
+    %prod.quarkus.datasource.jdbc.url=${PG_URL}
+    %prod.quarkus.datasource.username=${PG_USER}
+    %prod.quarkus.datasource.password=${PG_PASS}
     %prod.quarkus.datasource.jdbc.driver=org.postgresql.Driver
     %prod.quarkus.hibernate-orm.database.generation=drop-and-create
     %prod.quarkus.hibernate-orm.database.generation=update
@@ -85,18 +108,44 @@ Now that we've got a PostgreSQL instance up and running, let's build and deploy 
     %prod.quarkus.openshift.expose=true
     %prod.quarkus.openshift.deployment-kind=Deployment
     %prod.quarkus.container-image.group=microsweeper-ex
+    %prod.quarkus.openshift.env.secrets=microsweeper-secret
     EOF
     ```
 
 1. Now that we've provided the proper configuration, we will build our application. We'll do this using [source-to-image](https://github.com/openshift/source-to-image){:target="_blank"}, a tool built-in to OpenShift. To start the build and deploy, run the following command:
 
+    !!! info "Quarkus will build the .jar locally and then work with the OpenShift build system to inject it into a Red Hat UBI image, save that to the inbuild OpenShift registry, and then run the resultant image in OpenShift."
+
     ```bash
     quarkus build --no-tests
     ```
 
+1. We want to see custom metrics from the Quarkus app (they're exposed by the Quarkus micrometer plugin) so we can configure a Prometheus `ServiceMonitor` resource to watch for the applications label.
+
+    ```bash
+    cat << EOF | oc apply -f -
+    apiVersion: monitoring.coreos.com/v1
+    kind: ServiceMonitor
+    metadata:
+      labels:
+        k8s-app: microsweeper-monitor
+      name: microsweeper-monitor
+      namespace: microsweeper-ex
+    spec:
+      endpoints:
+      - interval: 30s
+        targetPort: 8080
+        path: /q/metrics
+        scheme: http
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: microsweeper-appservice
+    EOF
+    ```
+
 ## Review
 
-Let's take a look at what this command did, along with everything that was created in your cluster. Return to your tab with the OpenShift Web Console. If you need to reauthenticate, follow the steps in the [Access Your Cluster](../setup/3-access-cluster/) section.
+Let's take a look at what this command did, along with everything that was created in your cluster. Return to your tab with the OpenShift Web Console. If you need to reauthenticate, follow the steps in the [Access Your Cluster](../100-setup/3-access-cluster/) section.
 
 ### Container Images
 From the Administrator perspective, expand *Builds* and then *ImageStreams*, and select the *microsweeper-ex* project.
@@ -156,6 +205,15 @@ You can also get the the URL for your application using the command line:
 oc -n microsweeper-ex get route microsweeper-appservice -o jsonpath='{.spec.host}'
 ```
 
+### View custom metrics for the App
+
+Switch the OpenShift Web Console to the Developer view, select the project `microsweeper-ex` and go to **Observe > Metrics** and type `process_uptime_seconds` into custom metrics. Switch the timeframe to `5min`.
+
+!!! info "While you're here, you might also want to look at the Dashboard tab to see the Project's CPU/Memory usage."
+
+![Microsweeper custom metrics](./images/microsweeper-metrics.png)
+
+
 ### Application IP
 Let's take a quick look at what IP the application resolves to. Back in your Cloud Shell environment, run the following command:
 
@@ -170,7 +228,7 @@ Server:         168.63.129.16
 Address:        168.63.129.16#53
 
 Non-authoritative answer:
-Name:   microsweeper-appservice-microsweeper-ex.apps.ce7l3kf6.eastus.aroapp.io
+Name:   microsweeper-appservice-microsweeper-ex.apps.ce7l3kf6.{{ azure_region }}.aroapp.io
 Address: 40.117.143.193
 ```
 
