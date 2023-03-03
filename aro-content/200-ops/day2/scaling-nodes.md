@@ -74,7 +74,8 @@ Many of these changes are done using MachineSets. MachineSets ensure that a spec
     user1-cluster-8kvh4-worker-{{ azure_region }}3   1         1         1       1           4h50m
     ```
 
-    Note, that the number of *desired* and *current* nodes matches the scale we specified, but only one is *ready* and *available*.
+    !!! note
+        Note, that the number of *desired* and *current* nodes matches the scale we specified, but only one is *ready* and *available*.
 
     We can also run the same command we ran in step 2 to see the machine being provisioned:
 
@@ -106,6 +107,11 @@ Now let's scale the cluster back down to a total of 3 worker nodes, but this tim
     ![Web Console - Cluster Settings](/assets/images/web-console-machineset-sidebar.png){ align=center }
 
 1. In the overview you will see the same information about the MachineSets that you saw on the command line. Now, locate the MachineSet which has "2 of 2" machines, and click on the ⋮ icon, then select *Edit machine count*.
+
+    !!! note
+        It may take up to 5 minutes for the MachineSet to scale to 2 nodes 
+        while the underlying machine provisions and becomes ready.  Until this time, 
+        the machine count will read "1 of 2".
 
     ![Web Console - MachineSets Menu](/assets/images/web-console-machinesets-three-dots.png){ align=center }
     ![Web Console - MachineSets Count Menu](/assets/images/web-console-machinesets-edit-count-menu.png){ align=center }

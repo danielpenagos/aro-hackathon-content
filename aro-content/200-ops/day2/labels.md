@@ -13,13 +13,8 @@ While you can directly add a label to a node, it is not recommended because node
     echo ${MACHINESET}
     ```
 
-1. Now, let's review the current definition of the MachineSet. To do so, run the following command (Remember to exit from the editor with :q! ):
-
-    ```bash
-    oc -n openshift-machine-api edit $MACHINESET
-    ```
-
 1. Now, let's patch the MachineSet with our new label. To do so, run the following command:
+
     ```bash
     oc -n openshift-machine-api patch ${MACHINESET} \
       --type=merge -p '{"spec":{"template":{"spec":{"metadata":
@@ -147,6 +142,7 @@ Now that we've successfully labeled our nodes, let's deploy a workload to demons
 
 1. In the above case, you'd visit `https://nodeselector-app-nodeselector-ex.apps.ce7l3kf6.{{ azure_region }}.aroapp.io` in your browser.
 
-    > Note the application is exposed over the default ingress using a predetermined URL and trusted TLS certificate. This is done using the OpenShift `Route` resource which is an extension to the Kubernetes `Ingress` resource.
+    !!!note
+        The application is exposed over the default ingress using a predetermined URL and trusted TLS certificate. This is done using the OpenShift `Route` resource which is an extension to the Kubernetes `Ingress` resource.
 
 Congratulations! You've successfully demonstrated the ability to label nodes and target those nodes using `nodeSelector`.

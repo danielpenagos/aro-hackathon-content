@@ -168,6 +168,8 @@ Now let's test the cluster autoscaler and see it in action. To do so, we'll depl
     user1-cluster-8kvh4-worker-{{ azure_region }}3   1         1         1       1           6h47m
     ```
 
+    !!! info "If you see READY and AVAILABLE at 1 still, don't panic! It can take a few minutes for the workers to instantiate. Try checking again after 3-5 minutes."
+
     This shows that the cluster autoscaler is working on scaling the MachineSet up to 3.
 
 1. Now let's watch the cluster autoscaler create and delete machines as necessary. To do so, run the following command:
@@ -187,8 +189,6 @@ Now let's test the cluster autoscaler and see it in action. To do so, we'll depl
     user1-cluster-8kvh4-worker-{{ azure_region }}2-xmhrw   Running   Standard_D4s_v3   {{ azure_region }}   2      6h47m
     user1-cluster-8kvh4-worker-{{ azure_region }}3-kggpz   Running   Standard_D4s_v3   {{ azure_region }}   3      6h47m
     ```
-
-1. Finally, drop the job you created and watch the cluster's behavior while deleting machines.
 
     !!! info
 

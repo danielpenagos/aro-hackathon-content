@@ -188,11 +188,20 @@ User Workload Metrics is a Prometheus stack that runs in the cluster that can co
 
 1. Restart Log Collector
 
-    !!! warning "Sometimes the log collector agent starts before the operator has finished configuring Loki, restarting it here will resolve."
+    !!! warning 
+        Sometimes the log collector agent starts before the operator has finished configuring Loki, restarting it here will resolve.
 
     ```bash
     oc -n openshift-logging rollout restart daemonset collector
     ```
+
+    !!! warning 
+        You may see this warning message which can be safely ignored:
+
+        ```
+        Warning: spec.template.metadata.annotations[scheduler.alpha.kubernetes.io/critical-pod]: non-functional in v1.16+; use the "priorityClassName" field instead
+        ```
+
 
 ## View the Metrics and Logs
 
@@ -201,10 +210,10 @@ Now that the Metrics and Log forwarding is set up we can view them in Grafana.
 1. Fetch the Route for Grafana
 
     ```bash
-    oc -n custom-logging get route grafana-route
+    oc -n custom-logging get route grafana-route -o jsonpath='{"https://"}{.spec.host}{"\n"}'
     ```
 
-1. Browse to the provided route address and login using your OpenShift kubeadmin credentials (username kubeadmin, password echo $OCP_PASS).
+1. Browse to the provided route address in the same browser window as your OCP console and login using your OpenShift credentials (either AAD or kubeadmin). 
 
 1. View an existing dashboard such as **custom-logging -> Node Exporter -> USE Method -> Cluster**.
 
