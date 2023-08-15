@@ -4,7 +4,7 @@
 
 Your workshop environment consists of several components which have been pre-configured and are ready to use. This includes a [Microsoft Azure](https://azure.microsoft.com/en-us/){:target="_blank"} account, an [Azure Red Hat OpenShift](https://azure.microsoft.com/en-us/products/openshift/){:target="_blank"} cluster, and many other supporting resources.
 
-To access your working environment, you'll need to log into the [Microsoft Azure portal](https://portal.azure.com){:target="_blank"}.  Use your provided username with `@rhcsbb.onmicrosoft.com`. If you use the Azure portal regularly and it already knows a set of credentials for you, it's probably a good idea to use an Incognito window for this task, it should obviate the need to log out of an existing session.
+To access your working environment, you'll need to log into the [Microsoft Azure portal](https://portal.azure.com){:target="_blank"}.  Use your provided [username](https://docs.google.com/spreadsheets/d/1A6LBraxWhtEH6zb1KCiiuerxgT8ATwsasBCvqxy1DgI/edit?usp=sharing). If you use the Azure portal regularly and it already knows a set of credentials for you, it's probably a good idea to use an Incognito window for this task, it should obviate the need to log out of an existing session.
 
 When prompted, you'll log in with the credentials provided by the workshop team.
 
@@ -12,12 +12,6 @@ When prompted, you'll log in with the credentials provided by the workshop team.
 
     While these commands can be run in any Microsoft Azure account, we've completed many of the prerequisites for you to ensure they work in the workshop environment. As such, we recommend ensuring that you are logged out of any other Microsoft Azure sessions.
 
-### Pre-created Resources
-
-- Resource Group
-- vNet (with two subnets)
-- Azure AD Service Principal
-- Azure Red Hat OpenShift Cluster
 
 ### Access Azure Cloud Shell
 
@@ -35,29 +29,17 @@ Azure Cloud Shell is an interactive, authenticated, browser-accessible shell for
 
     ![Cloud Shell Language Choice](../assets/images/cloud-shell-bash.png){ align=center }
 
-1. On the next screen, you'll receive a message that says "You have no storage mounted". Select the *Show advanced settings* link.
+1. On the next screen, you'll receive a message that says "You have no storage mounted". Select the *Create storage* option.
 
-    ![Cloud Shell Show Advanced Options](../assets/images/cloud-shell-show-advanced-options.png){ align=center }
+    ![Cloud Shell Show Advanced Options](../assets/images/cloudshell-createstorage.png){ align=center }
 
-1. While we've pre-created a number of resources, including a storage account for you to use with Azure Cloud Shell, you'll need to configure Azure Cloud Shell using the table below.
-
-    | Option     | Value                               | Example |
-    | ----------- | ------------------------------------ | -------- |
-    | Subscription       | **Red Hat Cloud Services Workshops**  | N/A |
-    | Cloud Shell region       | **eastus**                 | N/A |
-    | Show VNET isolation settings    | *Leave Unchecked* | N/A |
-    | Resource group       | **cloudshell** (Select *Use Existing* Button) | **cloudshell** |
-    | Storage account       | **workshop#####** (Select *Use Existing* Button) | **workshop9befafc2** |
-    | File share       | **user#** (Select *Use Existing* Button) | **user0** |
-
-1. Once completed, click on the *Attach Storage* button to start your Azure Cloud Shell session.
-
-    ![Cloud Shell Create Storage](../assets/images/cloud-shell-create-storage.png){ align=center }
 
 1. When your shell is ready and you are at the bash prompt, run the following command to prepare your Cloud Shell environment for the remainder of the workshop:
 
     ```bash
-    ./clouddrive/setup.sh
+    curl https://raw.githubusercontent.com/danielpenagos/aro-hackathon-content/gh-pages/assets/cloudshell-setup.sh > setup.sh
+    chmod 755 setup.sh
+    ./setup.sh
     source ~/.workshoprc
     ```
 

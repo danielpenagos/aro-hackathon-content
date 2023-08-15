@@ -9,25 +9,59 @@ While in the Azure Cloud Shell that you should still have open from the "Environ
 ```bash
 env | grep -E  'AZ_'
 ```
-<!--
+
 # Get a Red Hat pull secret
 
 The next step is to get a Red Hat pull secret for your ARO cluster.  This pull secret will give you permissions to deploy ARO and access to Red Hat's Operator Hub among things.
 
-1. Login to [https://console.redhat.com/openshift/downloads#tool-pull-secret](https://console.redhat.com/openshift/downloads#tool-pull-secret) using the credentials provided to you.
+1. Login to [https://console.redhat.com/openshift/downloads#tool-pull-secret](https://console.redhat.com/openshift/downloads#tool-pull-secret) . If you don't have an account yet, it is good a time to create it. ;)
 
-2. hit the `Copy` button.
+2. hit the `Download` button. This will download the file in your laptop.
 
-3. Create an Environment variable for the pull secret (replace `<paste>` with the contents of your clipboard)
+3. In the cloudshell, upload the pull-secret file.
 
-    ```bash
-    echo '<paste>' > pullsecret.txt
-    ```
--->
+
 
 ### Networking
 
-Before we can create an ARO cluster, we need to setup the virtual network that the cluster will use. Due to accout access restrictions these have been created for you.
+Before we can create an ARO cluster, we need to setup the virtual network that the cluster will use. 
+
+0. Resource group and VNET creation
+
+    ```bash
+    
+    AZR_ARO_VNET_PREFIXES=10.0.0.0/21
+    
+    AZR_ARO_SUBNET_MASTER_PREFIXES=10.0.0.0/23
+    
+    AZR_ARO_SUBNET_WORKER_PREFIXES=10.0.2.0/23
+    
+    echo "----> Create virtual network"
+    az network vnet create \
+      --address-prefixes $AZR_ARO_VNET_PREFIXES \
+      --name "${AZ_USER}-vnet" \
+      --resource-group $AZ_RG
+    echo "----> Create control plane subnet"
+    az network vnet subnet create \
+      --resource-group $AZ_RG \
+      --vnet-name "${AZ_USER}-vnet" \
+      --name "${AZ_USER}-cp-subnet" \
+      --address-prefixes $AZR_ARO_SUBNET_MASTER_PREFIXES \
+      --service-endpoints Microsoft.ContainerRegistry
+    echo "----> Create machine subnet subnet"
+    az network vnet subnet create \
+      --resource-group $AZ_RG \
+      --vnet-name "${AZ_USER}-vnet" \
+      --name "${AZ_USER}-machine-subnet" \
+      --address-prefixes $AZR_ARO_SUBNET_WORKER_PREFIXES \
+      --service-endpoints Microsoft.ContainerRegistry
+    echo "----> Update control plane subnet to disable private   link service network policies"
+    az network vnet subnet update \
+      --name "${AZ_USER}-cp-subnet" \
+      --resource-group $AZ_RG \
+      --vnet-name "${AZ_USER}-vnet" \
+      --disable-private-link-service-network-policies true
+    ```
 
 1. Verify virtual network (vNet)
 
@@ -66,7 +100,7 @@ Before we can create an ARO cluster, we need to setup the virtual network that t
       --vnet "${AZ_USER}-vnet" \
       --master-subnet "${AZ_USER}-cp-subnet" \
       --worker-subnet "${AZ_USER}-machine-subnet" \
-      --pull-secret @~/clouddrive/pullsecret.txt
+      --pull-secret @~/pull-secret
     ```
 
     While the cluster is being created, let's learn more about what you will be doing in this workshop.

@@ -47,16 +47,19 @@ if ! which siege > /dev/null; then
 fi
 
 echo "Configuring Environment specific variables"
+
+AZ_USER=$(az ad signed-in-user show --query "userPrincipalName" -o tsv | cut -d @ -f1)
+
 cat <<EOF > ~/.workshoprc
 #!/bin/bash
 # source ~/bin/oc_bash_completion
-export AZ_USER=$(az ad signed-in-user show --query "userPrincipalName" -o tsv | cut -d @ -f1)
+export AZ_USER="${AZ_USER}"
 export USERID="${AZ_USER}"
 # export AZ_PASS="R3dH4t1!"
 
 export AZ_RG="${AZ_USER}-rg"
 export AZ_ARO="${AZ_USER}-cluster"
-export AZ_LOCATION='{{ azure_region }}'
+export AZ_LOCATION=eastus
 
 alias k=kubectl
 EOF

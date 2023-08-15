@@ -382,7 +382,7 @@ At this point, we can successfully build and deploy new code by manually running
 
       To learn more about Triggers, [review the Tekton documentation](https://tekton.dev/docs/triggers/triggers/){:target="_blank"}.
 
-    - `4-event-listenter.yaml`
+    - `4-event-listener.yaml`
       The last file we have is the Event Listener.  An EventListener is a Kubernetes object that listens for events at a specified port on your OpenShift cluster. It exposes an OpenShift Route that receives incoming event and specifies one or more Triggers.
 
       To learn more about EventListeners, [review the Tekton documentation](https://tekton.dev/docs/triggers/eventlisteners/){:target="_blank"}.
