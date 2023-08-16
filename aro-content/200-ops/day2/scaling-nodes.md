@@ -183,7 +183,4 @@ Now let's the worker nodes that yuu create, but this time, from the web console.
         while the underlying machine provisions and becomes ready.  Until this time, 
         the machine count will read "0 of 1".
 
-    ![Web Console - MachineSets Menu](/assets/images/web-console-machinesets-three-dots.png){ align=center }
-    ![Web Console - MachineSets Count Menu](/assets/images/web-console-machinesets-edit-count-menu.png){ align=center }
-
 Congratulations! You've successfully created your own worker node.
