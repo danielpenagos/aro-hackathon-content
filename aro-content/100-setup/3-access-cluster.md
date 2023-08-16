@@ -15,10 +15,8 @@
 
     ```bash
     cat << EOF >> ~/.workshoprc
-    export OCP_PASS=$(az aro list-credentials --name \
-      "${AZ_ARO}" --resource-group "${AZ_RG}" \
-      --query="kubeadminPassword" -o tsv)
-    export OCP_USER="kubeadmin"
+    export OCP_PASS=Qaz2wsx123xv!
+    export OCP_USER=${USER}
     export OCP_CONSOLE="$(az aro show --name ${AZ_ARO} \
       --resource-group ${AZ_RG} \
       -o tsv --query consoleProfile)"
@@ -37,13 +35,6 @@
 
         We use helper variables extensively throughout this workshop, but we also include the commands we used to populate these helper variables to ensure you can craft these commands later.
 
-1. To access the OpenShift CLI tools (`oc`) and web console you will need to retrieve your cluster credentials. The helper variables from above will make this simple!
-
-    To retrieve the credentials, run the following command:
-
-    ```bash
-    az aro list-credentials --name "${AZ_ARO}" --resource-group "${AZ_RG}"
-    ```
 
 1. Next retrieve the console URL by running the following command:
 
