@@ -27,28 +27,28 @@ nav:
     # - Azure Front Door:
     #  - Create a Private Ingress Controller: 200-ops/afd/private-ingress.md
     #  - Configure Azure Front Door: 200-ops/afd/configure.md
-  - Deploy and Expose an App:
-    - Deploy the App: 300-app/deploy.md
+  #- Deploy and Expose an App:
+  #  - Deploy the App: 300-app/deploy.md
     # - Expose the App with Front Door: 300-app/afd.md
-    - Using OpenShift GitOps: 300-app/gitops.md
-    - Restrict Network Access: 300-app/networkpolicy.md
-  - Make an App Resilient: 300-app/resilience.md
-  - Azure Arc:
-    - Connect Azure Arc with ARO: 400-cluster-mgmt/arc/integration.md
-    - Enable Azure Arc Observability: 400-cluster-mgmt/arc/observability.md
-    - Integrate Azure Key Vault: 400-cluster-mgmt/arc/key-vault.md
+  #  - Using OpenShift GitOps: 300-app/gitops.md
+  #  - Restrict Network Access: 300-app/networkpolicy.md
+  #- Make an App Resilient: 300-app/resilience.md
+  #- Azure Arc:
+  #  - Connect Azure Arc with ARO: 400-cluster-mgmt/arc/integration.md
+  #  - Enable Azure Arc Observability: 400-cluster-mgmt/arc/observability.md
+  #  - Integrate Azure Key Vault: 400-cluster-mgmt/arc/key-vault.md
   # - Advanced Cluster Security: 600-acs/1-cluster-install.md
-  - Service Mesh:
-    - Service Mesh: 500-service-mesh/introduction.md
-    - Deploy Service Mesh Operator: 500-service-mesh/install.md
-    - Deploy Control Plane: 500-service-mesh/deploy-control-plane.md
-    - Deploy Workloads: 500-service-mesh/deploy-workload.md
-    - Deploy Weighted Load Balancing: 500-service-mesh/weighted-routing.md
-    - Access Kiali Dashboard: 500-service-mesh/kiali.md
-  - CI/CD:
-    - Automate Deploying the App with Tekton: 300-app/cicd.md
-  - Conclusion:
-    - Clean Up: finish.md
+  #- Service Mesh:
+  #  - Service Mesh: 500-service-mesh/introduction.md
+  #  - Deploy Service Mesh Operator: 500-service-mesh/install.md
+  #  - Deploy Control Plane: 500-service-mesh/deploy-control-plane.md
+  #  - Deploy Workloads: 500-service-mesh/deploy-workload.md
+  #  - Deploy Weighted Load Balancing: 500-service-mesh/weighted-routing.md
+  #  - Access Kiali Dashboard: 500-service-mesh/kiali.md
+  #- CI/CD:
+  #  - Automate Deploying the App with Tekton: 300-app/cicd.md
+  #- Conclusion:
+  #  - Clean Up: finish.md
 
 # Theme Configuration
 theme:
