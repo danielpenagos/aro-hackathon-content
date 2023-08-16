@@ -40,26 +40,96 @@ Many of these changes are done using MachineSets. MachineSets ensure that a spec
     user1-cluster-8kvh4-worker-{{ azure_region }}3-kggpz   Running   Standard_D4s_v3   {{ azure_region }}   3      4h36m
     ```
 
-3. Now that we know that we have three worker nodes, let's pick a MachineSet to scale up using the OpenShift CLI tools. To do so, run the following command:
+3. Now that we know that we have three worker nodes, let's pick a MachineSet to and create a new MachineSet using the OpenShift CLI tools, with your user number. To do so, run the following command:
+
+    Change the # of your user in the name of the machine set
 
     ```bash
-    MACHINESET=$(oc -n openshift-machine-api get machinesets -o name | head -1)
-    echo ${MACHINESET}
+    NAME_MACHINESET=arofundamentals-5c5n4-worker-eastus1-user#
+    echo ${NAME_MACHINESET}
     ```
 
     The output of the command should look something like this:
 
     ```{.text .no-copy}
-    machineset.machine.openshift.io/user1-cluster-8kvh4-worker-{{ azure_region }}1
+    arofundamentals-5c5n4-worker-eastus1-user#
     ```
 
-4. Now, let's scale up our selected MachineSet from one to two machines. To do so, run the following command:
+    Create the following MachineSet file
+
+    ```{.text .no-copy}
+    cat <<EOF >>${NAME_MACHINESET}.yaml
+    apiVersion: machine.openshift.io/v1beta1
+    kind: MachineSet
+    metadata:
+      annotations:
+        machine.openshift.io/GPU: '0'
+        machine.openshift.io/memoryMb: '16384'
+        machine.openshift.io/vCPU: '4'
+      name: ${NAME_MACHINESET}
+      namespace: openshift-machine-api
+      labels:
+        machine.openshift.io/cluster-api-cluster: arofundamentals-5c5n4
+        machine.openshift.io/cluster-api-machine-role: worker
+        machine.openshift.io/cluster-api-machine-type: worker
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          machine.openshift.io/cluster-api-cluster: arofundamentals-5c5n4
+          machine.openshift.io/cluster-api-machineset: arofundamentals-5c5n4-worker-eastus1
+      template:
+        metadata:
+          labels:
+            machine.openshift.io/cluster-api-cluster: arofundamentals-5c5n4
+            machine.openshift.io/cluster-api-machine-role: worker
+            machine.openshift.io/cluster-api-machine-type: worker
+            machine.openshift.io/cluster-api-machineset: arofundamentals-5c5n4-worker-eastus1
+        spec:
+          lifecycleHooks: {}
+          metadata: {}
+          providerSpec:
+            value:
+              osDisk:
+                diskSettings: {}
+                diskSizeGB: 128
+                managedDisk:
+                  storageAccountType: Premium_LRS
+                osType: Linux
+              networkResourceGroup: dpenagos
+              publicLoadBalancer: arofundamentals-5c5n4
+              userDataSecret:
+                name: worker-user-data
+              vnet: aro-vnet-lld49wxe
+              credentialsSecret:
+                name: azure-cloud-credentials
+                namespace: openshift-machine-api
+              zone: '1'
+              metadata:
+                creationTimestamp: null
+              publicIP: false
+              resourceGroup: aro-infra-lld4cij1-arofundamentals
+              kind: AzureMachineProviderSpec
+              location: eastus
+              vmSize: Standard_D4s_v3
+              image:
+                offer: aro4
+                publisher: azureopenshift
+                resourceID: ''
+                sku: aro_411
+                version: 411.86.20221004
+              acceleratedNetworking: true
+              subnet: worker-subnet
+              apiVersion: machine.openshift.io/v1beta1
+    EOF
+    ```
+4. Now, let's create the new MachineSet file
 
     ```bash
-    oc -n openshift-machine-api scale --replicas=2 ${MACHINESET}
+    oc apply -f ${NAME_MACHINESET}.yaml
     ```
 
-5. Now that we've scaled the MachineSet to two machines, we can see that the machine is already being created. First, let's quickly check the output of the same command we ran in step 1:
+5. Now that we've create the new MachineSet, we can see that the machine is already being created. First, let's quickly check the output of the same command we ran in step 1:
 
     ```bash
     oc -n openshift-machine-api get machinesets
@@ -75,7 +145,7 @@ Many of these changes are done using MachineSets. MachineSets ensure that a spec
     ```
 
     !!! note
-        Note, that the number of *desired* and *current* nodes matches the scale we specified, but only one is *ready* and *available*.
+        Note, that the number of *desired* and *current* nodes matches to one
 
     We can also run the same command we ran in step 2 to see the machine being provisioned:
 
@@ -98,7 +168,7 @@ Many of these changes are done using MachineSets. MachineSets ensure that a spec
 
 ### Via the Console
 
-Now let's scale the cluster back down to a total of 3 worker nodes, but this time, from the web console.
+Now let's the worker nodes that yuu create, but this time, from the web console.
 
 1. Return to your tab with the OpenShift Web Console. If you need to reauthenticate, follow the steps in the [Access Your Cluster](../setup/3-access-cluster/) section.
 
@@ -106,18 +176,14 @@ Now let's scale the cluster back down to a total of 3 worker nodes, but this tim
 
     ![Web Console - Cluster Settings](/assets/images/web-console-machineset-sidebar.png){ align=center }
 
-1. In the overview you will see the same information about the MachineSets that you saw on the command line. Now, locate the MachineSet which has "2 of 2" machines, and click on the ⋮ icon, then select *Edit machine count*.
+1. In the overview you will see the same information about the MachineSets that you saw on the command line. Now, locate your MachineSet which has "1 of 1" machines.
 
     !!! note
-        It may take up to 5 minutes for the MachineSet to scale to 2 nodes 
+        It may take up to 5 minutes for the MachineSet to create the node 
         while the underlying machine provisions and becomes ready.  Until this time, 
-        the machine count will read "1 of 2".
+        the machine count will read "0 of 1".
 
     ![Web Console - MachineSets Menu](/assets/images/web-console-machinesets-three-dots.png){ align=center }
     ![Web Console - MachineSets Count Menu](/assets/images/web-console-machinesets-edit-count-menu.png){ align=center }
 
-1. Next, reduce the count from "2" to "1" and click *Save* to save your changes.
-
-    ![Web Console - MachineSets Edit Count](/assets/images/web-console-machinesets-edit-count.png){ align=center }
-
-Congratulations! You've successfully scaled your cluster up and back down to three nodes.
+Congratulations! You've successfully created your own worker node.
