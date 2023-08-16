@@ -42,11 +42,13 @@ Many of these changes are done using MachineSets. MachineSets ensure that a spec
 
 3. Now that we know that we have three worker nodes, let's pick a MachineSet to and create a new MachineSet using the OpenShift CLI tools, with your user number. To do so, run the following command:
 
-    Change the # of your user in the name of the machine set
+    Change the # of your user in the name of the machine set and the label user
 
     ```bash
     NAME_MACHINESET=arofundamentals-5c5n4-worker-eastus1-user#
+    LABEL_USER=user#
     echo ${NAME_MACHINESET}
+    echo ${LABEL_USER}
     ```
 
     The output of the command should look something like this:
@@ -77,14 +79,14 @@ Many of these changes are done using MachineSets. MachineSets ensure that a spec
       selector:
         matchLabels:
           machine.openshift.io/cluster-api-cluster: arofundamentals-5c5n4
-          machine.openshift.io/cluster-api-machineset: arofundamentals-5c5n4-worker-eastus1
+          machine.openshift.io/cluster-api-machineset: arofundamentals-5c5n4-worker-eastus1-${LABEL_USER}
       template:
         metadata:
           labels:
             machine.openshift.io/cluster-api-cluster: arofundamentals-5c5n4
             machine.openshift.io/cluster-api-machine-role: worker
             machine.openshift.io/cluster-api-machine-type: worker
-            machine.openshift.io/cluster-api-machineset: arofundamentals-5c5n4-worker-eastus1
+            machine.openshift.io/cluster-api-machineset: arofundamentals-5c5n4-worker-eastus1-${LABEL_USER}
         spec:
           lifecycleHooks: {}
           metadata: {}
