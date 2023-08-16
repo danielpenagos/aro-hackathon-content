@@ -16,10 +16,10 @@ Many of these changes are done using MachineSets. MachineSets ensure that a spec
     By default, ARO clusters have three MachineSets, one for each availability zone. The output will look something like this:
 
     ```{.text .no-copy}
-    NAME                                 DESIRED   CURRENT   READY   AVAILABLE   AGE
-    user1-cluster-8kvh4-worker-{{ azure_region }}1   1         1         1       1           4h36m
-    user1-cluster-8kvh4-worker-{{ azure_region }}2   1         1         1       1           4h36m
-    user1-cluster-8kvh4-worker-{{ azure_region }}3   1         1         1       1           4h36m
+    NAME                                         DESIRED   CURRENT   READY   AVAILABLE   AGE
+    arofundamentals-5c5n4-worker-eastus1         1         1         1       1           80m
+    arofundamentals-5c5n4-worker-eastus2         1         1         1       1           80m
+    arofundamentals-5c5n4-worker-eastus3         1         1         1       1           80m
     ```
 
 2. Now, let's take a look at the machines that have been created according to the instructions provided by the above MachineSets. To do so, run the following command:
@@ -32,12 +32,12 @@ Many of these changes are done using MachineSets. MachineSets ensure that a spec
 
     ```{.text .no-copy}
     NAME                                       PHASE     TYPE              REGION   ZONE   AGE
-    user1-cluster-8kvh4-master-0               Running   Standard_D8s_v3   {{ azure_region }}   1      4h39m
-    user1-cluster-8kvh4-master-1               Running   Standard_D8s_v3   {{ azure_region }}   2      4h39m
-    user1-cluster-8kvh4-master-2               Running   Standard_D8s_v3   {{ azure_region }}   3      4h39m
-    user1-cluster-8kvh4-worker-{{ azure_region }}1-gls9k   Running   Standard_D4s_v3   {{ azure_region }}   1      4h36m
-    user1-cluster-8kvh4-worker-{{ azure_region }}2-xmhrw   Running   Standard_D4s_v3   {{ azure_region }}   2      4h36m
-    user1-cluster-8kvh4-worker-{{ azure_region }}3-kggpz   Running   Standard_D4s_v3   {{ azure_region }}   3      4h36m
+    arofundamentals-5c5n4-master-0                     Running   Standard_D8s_v3   eastus   1      108m
+    arofundamentals-5c5n4-master-1                     Running   Standard_D8s_v3   eastus   2      108m
+    arofundamentals-5c5n4-master-2                     Running   Standard_D8s_v3   eastus   3      108m
+    arofundamentals-5c5n4-worker-eastus1-9hjvw         Running   Standard_D4s_v3   eastus   1      103m
+    arofundamentals-5c5n4-worker-eastus2-n8mmf         Running   Standard_D4s_v3   eastus   2      103m
+    arofundamentals-5c5n4-worker-eastus3-679pk         Running   Standard_D4s_v3   eastus   3      103m
     ```
 
 3. Now that we know that we have three worker nodes, let's pick a MachineSet to and create a new MachineSet using the OpenShift CLI tools, with your user number. To do so, run the following command:
@@ -139,9 +139,10 @@ Many of these changes are done using MachineSets. MachineSets ensure that a spec
 
     ```{.text .no-copy}
     NAME                                 DESIRED   CURRENT   READY   AVAILABLE   AGE
-    user1-cluster-8kvh4-worker-{{ azure_region }}1   2         2         1       1           4h50m
-    user1-cluster-8kvh4-worker-{{ azure_region }}2   1         1         1       1           4h50m
-    user1-cluster-8kvh4-worker-{{ azure_region }}3   1         1         1       1           4h50m
+    arofundamentals-5c5n4-worker-eastus1         1         1         1       1           109m
+    arofundamentals-5c5n4-worker-eastus1-user#   1         0         0       0           3m
+    arofundamentals-5c5n4-worker-eastus2         1         1         1       1           109m
+    arofundamentals-5c5n4-worker-eastus3         1         1         1       1           109m
     ```
 
     !!! note
@@ -157,13 +158,13 @@ Many of these changes are done using MachineSets. MachineSets ensure that a spec
 
     ```{.text .no-copy}
     NAME                                       PHASE         TYPE              REGION   ZONE   AGE
-    user1-cluster-8kvh4-master-0               Running       Standard_D8s_v3   {{ azure_region }}   1      4h58m
-    user1-cluster-8kvh4-master-1               Running       Standard_D8s_v3   {{ azure_region }}   2      4h58m
-    user1-cluster-8kvh4-master-2               Running       Standard_D8s_v3   {{ azure_region }}   3      4h58m
-    user1-cluster-8kvh4-worker-{{ azure_region }}1-gls9k   Running       Standard_D4s_v3   {{ azure_region }}   1      4h55m
-    user1-cluster-8kvh4-worker-{{ azure_region }}1-zj7dl   Provisioned   Standard_D4s_v3   {{ azure_region }}   1      9s
-    user1-cluster-8kvh4-worker-{{ azure_region }}2-xmhrw   Running       Standard_D4s_v3   {{ azure_region }}   2      4h55m
-    user1-cluster-8kvh4-worker-{{ azure_region }}3-kggpz   Running       Standard_D4s_v3   {{ azure_region }}   3      4h55m
+  arofundamentals-5c5n4-master-0                     Running       Standard_D8s_v3   eastus   1      81m
+  arofundamentals-5c5n4-master-1                     Running       Standard_D8s_v3   eastus   2      81m
+  arofundamentals-5c5n4-master-2                     Running       Standard_D8s_v3   eastus   3      81m
+  arofundamentals-5c5n4-worker-eastus1-9hjvw         Running       Standard_D4s_v3   eastus   1      76m
+  arofundamentals-5c5n4-worker-eastus1-user#-prrcd   Provisioned   Standard_D4s_v3   eastus   1      3m
+  arofundamentals-5c5n4-worker-eastus2-n8mmf         Running       Standard_D4s_v3   eastus   2      76m
+  arofundamentals-5c5n4-worker-eastus3-679pk         Running       Standard_D4s_v3   eastus   3      76m
     ```
 
 ### Via the Console
