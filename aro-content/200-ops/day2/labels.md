@@ -11,7 +11,7 @@ While you can directly add a label to a node, it is not recommended because node
     Change the # of your user in the name of the MAchineSet
 
     ```bash
-    NAME_MACHINESET=machineset.machine.openshift.io/arofundamentals-5c5n4-worker-eastus1-user#
+    NAME_MACHINESET=machineset.machine.openshift.io/arofundamentals-pcq8d-worker-eastus1-user#
     LABEL_USER=user#
     echo ${NAME_MACHINESET}
     ```
@@ -46,7 +46,7 @@ While you can directly add a label to a node, it is not recommended because node
     Your output will look something like this:
 
     ```{.text .no-copy}
-    node/arofundamentals-5c5n4-worker-eastus1-user1-hh77s
+    node/arofundamentals-pcq8d-worker-eastus1-user1-hh77s
     ```
 
     Pending that your output shows one or more node(s), this demonstrates that our MachineSet and associated nodes are properly annotated!
@@ -102,7 +102,7 @@ Now that we've successfully labeled our nodes, let's deploy a workload to demons
     Your output will look something like this (look for the final string to match, in this example `gkhgf`)
 
     ```{.text .no-copy}
-    node/arofundamentals-5c5n4-worker-eastus1-user1-hh77s
+    node/arofundamentals-pcq8d-worker-eastus1-user1-hh77s
     ```
 
 
