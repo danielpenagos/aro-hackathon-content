@@ -8,7 +8,7 @@ While you can directly add a label to a node, it is not recommended because node
 
 1. Just like the last section, let's pick a MachineSet to add our label. To do so, run the following command:
 
-    Change the # of your user in the name of the MAchineSet
+    Change the # of your user in the name of the MachineSet
 
     ```bash
     NAME_MACHINESET=machineset.machine.openshift.io/arofundamentals-pcq8d-worker-eastus1-user#
